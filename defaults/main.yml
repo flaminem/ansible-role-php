@@ -1,6 +1,7 @@
 ---
 php_version: 5
 # Package state:
-php_state: installed
+php_cli_state: installed
+php_fpm_state: installed
 php_extentions : 
   - php-pearl

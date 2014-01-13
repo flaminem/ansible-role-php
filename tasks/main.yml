@@ -1,9 +1,13 @@
 ---
- - name: Ensure php is installed
-   apt:  pkg=php{{php_version}}-cli,php{{php_version}}-fpm state={{php_state}}
+ - name: Ensure php-cli is installed
+   apt:  pkg=php{{php_version}}-cli state={{php_cli_state}}
    when: ansible_os_family == 'Debian'
    tags: package
 
+ - name: Ensure php-fpm is installed
+   apt:  pkg=php{{php_version}}-fpm state={{php_fpm_state}}
+   when: ansible_os_family == 'Debian'
+   tags: package
 
  - name: Ensure php extentions are installed
    apt:  pkg={{ item }}
@@ -14,3 +18,4 @@
 
  - name: Ensure fpm is launch
    service: name=php{{php_version}}-fpm state={{php_fpm_service}} enabled=yes
+   when: php_fpm_state == "installed"
