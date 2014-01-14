@@ -3,5 +3,8 @@ php_version: 5
 # Package state:
 php_cli_state: installed
 php_fpm_state: installed
+php_fpm_service: running
 php_extentions : 
-  - php-pearl
+  - php-pear
+php_fpm_ini:
+  - post_max_size: "16M"

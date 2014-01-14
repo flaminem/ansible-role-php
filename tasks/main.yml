@@ -13,8 +13,17 @@
    apt:  pkg={{ item }}
    with_items: php_extentions
    when: ansible_os_family == 'Debian'
+   notify: restart php fpm
    tags: package
-   when: php_extentions.0 is defined
+
+
+ - name: Ensure php.ini for fpm is configured
+   lineinfile: dest=/etc/php{{php_version}}/fpm/php.ini regexp="^;?{{ item.keys().0 }} ?=" insertafter=EOF line="{{ item.keys().0 }} = {{ item.values().0 }}"
+   with_items: php_fpm_ini
+   notify: restart php fpm
+   when: php_fpm_state == "installed"
+   tags: config
+
 
  - name: Ensure fpm is launch
    service: name=php{{php_version}}-fpm state={{php_fpm_service}} enabled=yes
