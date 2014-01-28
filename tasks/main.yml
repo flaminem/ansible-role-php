@@ -28,3 +28,4 @@
  - name: Ensure fpm is launch
    service: name=php{{php_version}}-fpm state={{php_fpm_service}} enabled=yes
    when: php_fpm_state == "installed"
+   tags: service
