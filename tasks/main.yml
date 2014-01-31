@@ -2,30 +2,35 @@
  - name: Ensure php-cli is installed
    apt:  pkg=php{{php_version}}-cli state={{php_cli_state}}
    when: ansible_os_family == 'Debian'
-   tags: package
+   tags: [package,php]
 
  - name: Ensure php-fpm is installed
    apt:  pkg=php{{php_version}}-fpm state={{php_fpm_state}}
+   register: php_fpm
    when: ansible_os_family == 'Debian'
-   tags: package
+   tags: [package,php]
 
  - name: Ensure php extentions are installed
    apt:  pkg={{ item }}
    with_items: php_extentions
    when: ansible_os_family == 'Debian'
    notify: restart php fpm
-   tags: package
+   tags: [package,php]
 
+ - name: Ensure php.ini exist
+   template: src=php.ini.j2 dest=/etc/php{{php_version}}/fpm/php.ini
+   notify: restart php fpm
+   when: php_fpm_state == "installed" and php_fpm.changed
+   tags: [configuration,php]
 
  - name: Ensure php.ini for fpm is configured
    lineinfile: dest=/etc/php{{php_version}}/fpm/php.ini regexp="^;?{{ item.keys().0 }} ?=" insertafter=EOF line="{{ item.keys().0 }} = {{ item.values().0 }}"
    with_items: php_fpm_ini
    notify: restart php fpm
    when: php_fpm_state == "installed"
-   tags: config
-
+   tags: [configuration,php]
 
  - name: Ensure fpm is launch
    service: name=php{{php_version}}-fpm state={{php_fpm_service}} enabled=yes
    when: php_fpm_state == "installed"
-   tags: service
+   tags: [configuration,php]
