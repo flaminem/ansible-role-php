@@ -8,3 +8,4 @@ php_extentions :
   - php-pear
 php_fpm_ini:
   - post_max_size: "16M"
+  - expose_php: Off
